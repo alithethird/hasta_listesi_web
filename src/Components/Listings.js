@@ -35,9 +35,11 @@ export default function Listings() {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [checkBox, setCheckBox] = React.useState(0);
     const deleteList = [];
-    // const rows = [];
-    const falseItems = [];
-    const [rows, setRows] = React.useState([]);
+    // const falseRows = [];
+    let falseItems = [];
+    let trueItems = [];
+    const [trueRows, setTrueRows] = React.useState([]);
+    const [falseRows, setFalseRows] = React.useState([]);
 
     React.useEffect(() => {
         // Get a reference to the database
@@ -45,35 +47,39 @@ export default function Listings() {
         const dataq = onValue(query, (snapshot) => {
             const data = snapshot.val();
             // console.log("data: ", data);
-            let dummyRow = [];
             if (snapshot.exists()) {
+                falseItems = [];
+                trueItems = [];
                 Object.keys(data).map((key) => {
                     let project = data[key];
                     project["key"] = key;
                     if (project.bittiMi == false) {
                         falseItems.push(project);
                     } else {
+                        trueItems.push(project);
                     }
-                    dummyRow.push(project);
                     // console.log("project: ", project);
                     // console.log("key: ", key);
                 });
-                setRows(dummyRow);
+                setTrueRows(trueItems);
+                setFalseRows(falseItems);
             }
         });
     }, []);
 
     // React.useEffect(()=>{
     //     console.log("rendered");
-    // }, [rows]);
+    // }, [falseRows]);
     // console.log(dataq);
-    // console.log(rows);
+    // console.log(falseRows);
     // Upload the state to the database
     function clicked(value, event) {
         console.log(event.target);
         console.log("value: ", value);
     }
     function descendingComparator(a, b, orderBy) {
+        console.log("a: ", a);
+        console.log("b: ", b);
         if (b[orderBy] < a[orderBy]) {
             return -1;
         }
@@ -98,7 +104,14 @@ export default function Listings() {
             }
             return a[1] - b[1];
         });
-        // console.log("stabilizedThis", stabilizedThis);
+        // stabilizedThis.sort((a, b) => {
+        //     comparator = getComparator('asc', "bittiMi");
+        //     const order = comparator(a[0], b[0]);
+        //     if (order !== 0) {
+        //         return order;
+        //     }
+        //     return a[1] - b[1];
+        // });
         return stabilizedThis.map((el) => el[0]);
     }
     const headCells = [
@@ -115,13 +128,13 @@ export default function Listings() {
             label: 'Telefon',
         },
         {
-            id: 'nots',
+            id: 'not',
             numeric: false,
             disablePadding: false,
             label: 'Notlar',
         },
         {
-            id: 'isDone',
+            id: 'bittiMi',
             numeric: true,
             disablePadding: false,
             label: 'Bitti',
@@ -205,7 +218,7 @@ export default function Listings() {
                         id="tableTitle"
                         component="div"
                     >
-                        Hasta Listesi
+                        {props.tableName}
                     </Typography>
                 )}
 
@@ -228,6 +241,7 @@ export default function Listings() {
 
 
     const handleRequestSort = (event, property) => {
+        console.log("property: ", property);
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
         setOrderBy(property);
@@ -235,7 +249,7 @@ export default function Listings() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.key);
+            const newSelected = falseRows.map((n) => n.key);
             setSelected(newSelected);
             return;
         }
@@ -288,19 +302,22 @@ export default function Listings() {
         const dataq = onValue(query, (snapshot) => {
             const data = snapshot.val();
             // console.log("data: ", data);
-
-            if (snapshot.exists()) {
+            if (snapshot.exists()) {                
+                falseItems = [];
+                trueItems = [];
                 Object.keys(data).map((key) => {
                     let project = data[key];
                     project["key"] = key;
                     if (project.bittiMi == false) {
                         falseItems.push(project);
                     } else {
+                        trueItems.push(project);
                     }
-                    rows.push(project);
                     // console.log("project: ", project);
                     // console.log("key: ", key);
                 });
+                setTrueRows(trueItems);
+                setFalseRows(falseItems);
             }
         });
         setCheckBox((prev) => {
@@ -319,18 +336,19 @@ export default function Listings() {
         setCheckBox((prev) => {
             return prev + 1;
         });
+        console.log("trueRows: ", trueRows);
 
     };
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
-    // Avoid a layout jump when reaching the last page with empty rows.
+    // Avoid a layout jump when reaching the last page with empty falseRows.
     const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - falseRows.length) : 0;
 
     return (
         <Box sx={{ width: '100%' }}>
             <Paper sx={{ width: '100%', mb: 2 }}>
-                <EnhancedTableToolbar numSelected={selected.length} />
+                <EnhancedTableToolbar numSelected={selected.length} tableName="Devam Eden Hasta Listesi" />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}
@@ -343,10 +361,10 @@ export default function Listings() {
                             orderBy={orderBy}
                             onSelectAllClick={handleSelectAllClick}
                             onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
+                            rowCount={falseRows.length}
                         />
                         <TableBody>
-                            {stableSort(rows, getComparator(order, orderBy))
+                            {stableSort(falseRows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
                                     const isItemSelected = isSelected(row.key);
@@ -423,7 +441,106 @@ export default function Listings() {
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25]}
                     component="div"
-                    count={rows.length}
+                    count={falseRows.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+<EnhancedTableToolbar numSelected={selected.length} tableName="Bitmis Hasta Listesi" />
+                <TableContainer>
+                    <Table
+                        sx={{ minWidth: 750 }}
+                        aria-labelledby="tableTitle"
+                        size={dense ? 'small' : 'medium'}
+                    >
+                        <EnhancedTableHead
+                            numSelected={selected.length}
+                            order={order}
+                            orderBy={orderBy}
+                            onSelectAllClick={handleSelectAllClick}
+                            onRequestSort={handleRequestSort}
+                            rowCount={trueRows.length}
+                        />
+                        <TableBody>
+                            {stableSort(trueRows, getComparator(order, orderBy))
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => {
+                                    const isItemSelected = isSelected(row.key);
+                                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                                    return (
+                                        <TableRow
+                                            hover
+                                            onChange={(event) => handleClick(event, row.key)}
+                                            role="checkbox"
+                                            aria-checked={isItemSelected}
+                                            tabIndex={-1}
+                                            key={row.key}
+                                            selected={isItemSelected}
+                                        >
+                                            <TableCell padding="checkbox">
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={isItemSelected}
+                                                    inputProps={{
+                                                        'aria-labelledby': labelId,
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell
+                                                component="th"
+                                                id={labelId}
+                                                scope="row"
+                                                padding="none"
+                                            >
+                                                {row.isim}
+                                            </TableCell>
+                                            <TableCell align="right">{row.phone}</TableCell>
+                                            <TableCell align="right">{row.not}</TableCell>
+                                            <TableCell align="right"><input
+                                                type="checkbox"
+                                                name="checkbox2"
+                                                value={row.bittiMi}
+                                                checked={row.bittiMi}
+                                                onChange={handleCheckbox2Change.bind(null, row)}
+                                                style={{
+                                                    color: "primary",
+                                                    marginLeft: '10px',
+                                                    verticalAlign: 'middle',
+                                                    appearance: 'checkbox',
+                                                    WebkitAppearance: 'checkbox',
+                                                    MozAppearance: 'checkbox',
+                                                    msAppearance: 'checkbox',
+                                                    width: '16px',
+                                                    height: '16px',
+                                                    borderRadius: '3px',
+                                                    outline: 'none',
+                                                    border: '1px solid rgba(0,0,0,0.2)',
+                                                    boxShadow: '0px 1px 3px rgba(0,0,0,0.1)',
+                                                    background: row.bittiMi ? 'blue' : 'pink'
+                                                }}
+                                            /></TableCell>
+
+                                        </TableRow>
+                                    );
+                                })}
+                            {emptyRows > 0 && (
+                                <TableRow
+                                    style={{
+                                        height: (dense ? 33 : 53) * emptyRows,
+                                    }}
+                                >
+                                    <TableCell colSpan={6} />
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={trueRows.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}
@@ -432,7 +549,7 @@ export default function Listings() {
             </Paper>
             <FormControlLabel
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
-                label="Dense padding"
+                label="Sıkı Görünüm"
             />
         </Box>
     );

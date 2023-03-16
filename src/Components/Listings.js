@@ -27,6 +27,8 @@ import { visuallyHidden } from '@mui/utils';
 import { Update } from "@mui/icons-material";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import TextField from "@mui/material/TextField";
+import SearchBar from '@mkyy/mui-search-bar';
 
 export default function Listings() {
     const [order, setOrder] = React.useState('asc');
@@ -37,18 +39,18 @@ export default function Listings() {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [checkBox, setCheckBox] = React.useState(0);
     const deleteList = [];
-    // const falseRows = [];
     let falseItems = [];
     let trueItems = [];
     const [trueRows, setTrueRows] = React.useState([]);
     const [falseRows, setFalseRows] = React.useState([]);
+    const [originalTrueRows, setOriginalTrueRows] = React.useState([]);
+    const [originalFalseRows, setOriginalFalseRows] = React.useState([]);
 
     React.useEffect(() => {
         // Get a reference to the database
         const query = ref(db, "hastalar");
         const dataq = onValue(query, (snapshot) => {
             const data = snapshot.val();
-            // console.log("data: ", data);
             if (snapshot.exists()) {
                 falseItems = [];
                 trueItems = [];
@@ -60,28 +62,15 @@ export default function Listings() {
                     } else {
                         trueItems.push(project);
                     }
-                    // console.log("project: ", project);
-                    // console.log("key: ", key);
                 });
-                setTrueRows(trueItems);
-                setFalseRows(falseItems);
+                // setTrueRows(trueItems);
+                // setFalseRows(falseItems);
+                setOriginalTrueRows(trueItems);
+                setOriginalFalseRows(falseItems);
             }
         });
     }, []);
-
-    // React.useEffect(()=>{
-    //     console.log("rendered");
-    // }, [falseRows]);
-    // console.log(dataq);
-    // console.log(falseRows);
-    // Upload the state to the database
-    function clicked(value, event) {
-        console.log(event.target);
-        console.log("value: ", value);
-    }
     function descendingComparator(a, b, orderBy) {
-        console.log("a: ", a);
-        console.log("b: ", b);
         if (b[orderBy] < a[orderBy]) {
             return -1;
         }
@@ -106,14 +95,6 @@ export default function Listings() {
             }
             return a[1] - b[1];
         });
-        // stabilizedThis.sort((a, b) => {
-        //     comparator = getComparator('asc', "bittiMi");
-        //     const order = comparator(a[0], b[0]);
-        //     if (order !== 0) {
-        //         return order;
-        //     }
-        //     return a[1] - b[1];
-        // });
         return stabilizedThis.map((el) => el[0]);
     }
     const headCells = [
@@ -318,8 +299,10 @@ export default function Listings() {
                     // console.log("project: ", project);
                     // console.log("key: ", key);
                 });
-                setTrueRows(trueItems);
-                setFalseRows(falseItems);
+                // setTrueRows(trueItems);
+                // setFalseRows(falseItems);
+                setOriginalTrueRows(trueItems);
+                setOriginalFalseRows(falseItems);
             }
         });
         setCheckBox((prev) => {
@@ -342,18 +325,52 @@ export default function Listings() {
 
     };
     const isSelected = (name) => selected.indexOf(name) !== -1;
+    React.useEffect(()=>{
+        setTrueRows(()=>originalTrueRows);
+        setFalseRows(()=>originalFalseRows);
+        console.log("originalTrueRows:::", originalTrueRows);
+        console.log("originalFalseRows:::", originalFalseRows);
 
+    }, [originalTrueRows])
     // Avoid a layout jump when reaching the last page with empty falseRows.
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - falseRows.length) : 0;
-
+    // const [textFieldValue, setTextFieldValue] = React.useState("");
+    const handleSearch = textFieldValue => {
+        setTrueRows(()=>[...originalTrueRows]);
+        setFalseRows(()=>[...originalFalseRows]);
+        console.log("originalFalseRows: ", originalFalseRows);
+        let dummyTrueRow = [];
+        let dummyFalseRow = [];
+        console.log(textFieldValue);
+        Object.values(originalTrueRows).map((value) => {
+            if (value.isim.toLowerCase().includes(textFieldValue)) {
+                console.log("value: ", value.isim);
+                // console.log("value.isim.indexOf(textFieldValue): ", value.isim.indexOf(textFieldValue));
+                dummyTrueRow.push(value);
+            }
+        });
+        Object.values(originalFalseRows).map((value) => {
+            if (value.isim.toLowerCase().includes(textFieldValue)) {
+                console.log("value: ", value.isim);
+                // console.log("value.isim.indexOf(textFieldValue): ", value.isim.indexOf(textFieldValue));
+                dummyFalseRow.push(value);
+            }
+        });
+        setTrueRows(dummyTrueRow);
+        setFalseRows(dummyFalseRow);
+    };
     return (
 
         <Box sx={{ width: '100%' }}>
             <Stack spacing={2} direction="row">
                 <Link to="/hasta_listesi_web" style={{ paddingLeft: 13, textDecoration: 'none' }}><Button variant="contained">Ana Ekran</Button></Link>
-                <Link to="/Form" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Yeni Hasta Ekle</Button></Link>
+                <Link to="/Form" style={{ paddingLeft: 13, textDecoration: 'none' }}><Button variant="contained">Yeni Hasta Ekle</Button></Link>
             </Stack>
+            <SearchBar
+                onChange={newValue => handleSearch(newValue)}
+                onSearch={handleSearch}
+            />
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar numSelected={selected.length} tableName="Devam Eden Hasta Listesi" />
                 <TableContainer>

@@ -80,7 +80,7 @@ export default function FlavorForm() {
                     name="hastaName"
                     onChange={handleNameChange} />
             </label>
-            <br></br>
+            <br/>
             <label>
                 Tel No:
                 <input
@@ -88,14 +88,14 @@ export default function FlavorForm() {
                     type="number"
                     onChange={handlePhoneChange} />
             </label>
-            <br></br>
+            <br/>
             <label>
                 Notlar:
                 <input
                     name="hastaNots"
                     onChange={handleNotsChange} />
             </label>
-            <br></br>
+            <br/>
             <label>
                 Bitti Mi:
                 <input
@@ -104,10 +104,12 @@ export default function FlavorForm() {
                     checked={hastaState.bittiMi}
                     onChange={handleCheckboxChange} />
             </label>
-            <br></br>
+            <br/>
             <input type="submit" value="Submit" />
-            <br></br>
+            <br/>
             <Link to="/hasta_listesi_web">Ana Sayfa</Link>
+            <br/>
+            <Link to="/Listings">Listeyi görüntüle</Link>
 
         </form>
     );

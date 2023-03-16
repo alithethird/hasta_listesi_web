@@ -6,6 +6,8 @@ export default function Home() {
     <>
       <h1>Ana Sayfa</h1>
       <Link to="/Form">Hasta Ekle</Link>
+      <br/>
+      <Link to="/Listings">Listeyi görüntüle</Link>
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { db } from "../utils/firebase";
-import { onValue, ref, push, set, update } from "firebase/database";
+import { onValue, ref, push, set, update, remove } from "firebase/database";
 import { Link } from 'react-router-dom';
 import "../styling/Listings.css";
 import * as React from 'react';
@@ -34,32 +34,33 @@ export default function Listings() {
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [checkBox, setCheckBox] = React.useState(0);
+    const deleteList = [];
     // const rows = [];
     const falseItems = [];
     const [rows, setRows] = React.useState([]);
 
-    React.useEffect(()=>{
+    React.useEffect(() => {
         // Get a reference to the database
-    const query = ref(db, "hastalar");
-    const dataq = onValue(query, (snapshot) => {
-        const data = snapshot.val();
-        // console.log("data: ", data);
-        let dummyRow = [];
-        if (snapshot.exists()) {
-            Object.keys(data).map((key) => {
-                let project = data[key];
-                project["key"] = key;
-                if (project.bittiMi == false) {
-                    falseItems.push(project);
-                } else {
-                }
-                dummyRow.push(project);
-                // console.log("project: ", project);
-                // console.log("key: ", key);
-            });
-            setRows(dummyRow);
-        }
-    });
+        const query = ref(db, "hastalar");
+        const dataq = onValue(query, (snapshot) => {
+            const data = snapshot.val();
+            // console.log("data: ", data);
+            let dummyRow = [];
+            if (snapshot.exists()) {
+                Object.keys(data).map((key) => {
+                    let project = data[key];
+                    project["key"] = key;
+                    if (project.bittiMi == false) {
+                        falseItems.push(project);
+                    } else {
+                    }
+                    dummyRow.push(project);
+                    // console.log("project: ", project);
+                    // console.log("key: ", key);
+                });
+                setRows(dummyRow);
+            }
+        });
     }, []);
 
     // React.useEffect(()=>{
@@ -97,7 +98,7 @@ export default function Listings() {
             }
             return a[1] - b[1];
         });
-        console.log("stabilizedThis", stabilizedThis);
+        // console.log("stabilizedThis", stabilizedThis);
         return stabilizedThis.map((el) => el[0]);
     }
     const headCells = [
@@ -210,7 +211,7 @@ export default function Listings() {
 
                 {numSelected > 0 ? (
                     <Tooltip title="Delete">
-                        <IconButton>
+                        <IconButton onClick={() => { deleteElement() }}>
                             <DeleteIcon />
                         </IconButton>
                     </Tooltip>
@@ -234,7 +235,7 @@ export default function Listings() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.isim);
+            const newSelected = rows.map((n) => n.key);
             setSelected(newSelected);
             return;
         }
@@ -306,7 +307,20 @@ export default function Listings() {
             return prev + 1;
         });
     }
+    function deleteElement() {
+        console.log("deleteeee: ", selected);
+        console.log("deleteeee len: ", selected.length);
+        for (let i = 0; i < selected.length; i++) {
+            console.log("delete select", selected[i]);
+            const deleteQuery = ref(db, "hastalar/" + selected[i]);
+            // deleteQuery.remove();
+            remove(deleteQuery);
+        }
+        setCheckBox((prev) => {
+            return prev + 1;
+        });
 
+    };
     const isSelected = (name) => selected.indexOf(name) !== -1;
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -335,17 +349,17 @@ export default function Listings() {
                             {stableSort(rows, getComparator(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map((row, index) => {
-                                    const isItemSelected = isSelected(row.isim);
+                                    const isItemSelected = isSelected(row.key);
                                     const labelId = `enhanced-table-checkbox-${index}`;
 
                                     return (
                                         <TableRow
                                             hover
-                                            onChange={(event) => handleClick(event, row.isim, row.bittiMi)}
+                                            onChange={(event) => handleClick(event, row.key)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
-                                            key={row.isim}
+                                            key={row.key}
                                             selected={isItemSelected}
                                         >
                                             <TableCell padding="checkbox">

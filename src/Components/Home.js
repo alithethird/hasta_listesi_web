@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 export default function Home() {
-  return (
-    <>
-      <h1>Ana Sayfa</h1>
-      <Link to="/Form">Hasta Ekle</Link>
-      <br/>
-      <Link to="/Listings">Listeyi görüntüle</Link>
-    </>
-  );
+
+    return (
+        <>
+            <h1>Ana Sayfa</h1>
+            <Stack spacing={2} direction="column">
+                <Link to="/Form" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Hasta Ekle</Button></Link>
+
+                <Link to="/Listings" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Listeyi görüntüle</Button>  </Link>
+            </Stack></>
+    );
 }

@@ -132,10 +132,10 @@ export default function FlavorForm() {
                 />
             </label>
             <br />
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Hasta Ekle" />
             <br />
             <Stack spacing={2} direction="column">
-                <Link to="/hasta_listesi_web" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Hasta Ekle</Button></Link>
+                <Link to="/hasta_listesi_web" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Ana Ekran</Button></Link>
 
                 <Link to="/Listings" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Listeyi görüntüle</Button>  </Link>
             </Stack>

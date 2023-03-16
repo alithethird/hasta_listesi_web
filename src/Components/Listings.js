@@ -216,6 +216,7 @@ export default function Listings() {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [checkBox, setCheckBox] = React.useState(0);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
@@ -269,25 +270,32 @@ export default function Listings() {
         console.log("value.key: ", value.key);
         value.bittiMi = event.target.checked;
         console.log("bittiMi is now " + event.target.checked);
-        const query = ref(db, "hastalar");
+        const queryu = ref(db, "hastalar");
         const updates = {};
         updates[String(value.key) + "/bittiMi"] = event.target.checked;
         console.log("updates: ", updates);
-        update(query, updates);
-
+        update(queryu, updates);
+        const query = ref(db, "hastalar");
         const dataq = onValue(query, (snapshot) => {
             const data = snapshot.val();
+            // console.log("data: ", data);
 
             if (snapshot.exists()) {
-                Object.values(data).map((project) => {
+                Object.keys(data).map((key) => {
+                    let project = data[key];
+                    project["key"] = key;
                     if (project.bittiMi == false) {
                         falseItems.push(project);
                     } else {
                     }
                     rows.push(project);
-                    console.log("project: ", project);
+                    // console.log("project: ", project);
+                    // console.log("key: ", key);
                 });
             }
+        });
+        setCheckBox((prev) => {
+            return prev + 1;
         });
     }
 
@@ -325,7 +333,7 @@ export default function Listings() {
                                     return (
                                         <TableRow
                                             hover
-                                            onClick={(event) => handleClick(event, row.isim)}
+                                            onChange={(event) => handleClick(event, row.isim, row.bittiMi)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}
@@ -358,6 +366,7 @@ export default function Listings() {
                                                 checked={row.bittiMi}
                                                 onChange={handleCheckbox2Change.bind(null, row)}
                                                 style={{
+                                                    color: "primary",
                                                     marginLeft: '10px',
                                                     verticalAlign: 'middle',
                                                     appearance: 'checkbox',
@@ -372,6 +381,7 @@ export default function Listings() {
                                                     boxShadow: '0px 1px 3px rgba(0,0,0,0.1)',
                                                 }}
                                             /></TableCell>
+
                                         </TableRow>
                                     );
                                 })}

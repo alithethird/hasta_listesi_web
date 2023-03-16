@@ -107,7 +107,7 @@ export default function FlavorForm() {
             <br></br>
             <input type="submit" value="Submit" />
             <br></br>
-            <Link to="/hasta_listesi_web">Home</Link>
+            <Link to="/hasta_listesi_web">Ana Sayfa</Link>
 
         </form>
     );

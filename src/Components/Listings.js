@@ -27,15 +27,24 @@ import { visuallyHidden } from '@mui/utils';
 import { Update } from "@mui/icons-material";
 
 export default function Listings() {
-    const rows = [];
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('calories');
+    const [selected, setSelected] = React.useState([]);
+    const [page, setPage] = React.useState(0);
+    const [dense, setDense] = React.useState(false);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [checkBox, setCheckBox] = React.useState(0);
+    // const rows = [];
     const falseItems = [];
+    const [rows, setRows] = React.useState([]);
 
-    // Get a reference to the database
+    React.useEffect(()=>{
+        // Get a reference to the database
     const query = ref(db, "hastalar");
     const dataq = onValue(query, (snapshot) => {
         const data = snapshot.val();
         // console.log("data: ", data);
-
+        let dummyRow = [];
         if (snapshot.exists()) {
             Object.keys(data).map((key) => {
                 let project = data[key];
@@ -44,12 +53,18 @@ export default function Listings() {
                     falseItems.push(project);
                 } else {
                 }
-                rows.push(project);
+                dummyRow.push(project);
                 // console.log("project: ", project);
                 // console.log("key: ", key);
             });
+            setRows(dummyRow);
         }
     });
+    }, []);
+
+    // React.useEffect(()=>{
+    //     console.log("rendered");
+    // }, [rows]);
     // console.log(dataq);
     // console.log(rows);
     // Upload the state to the database
@@ -210,13 +225,6 @@ export default function Listings() {
         );
     }
 
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const [checkBox, setCheckBox] = React.useState(0);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';

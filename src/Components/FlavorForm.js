@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { db } from "../utils/firebase";
 import { onValue, ref, push, set } from "firebase/database";
 import { Link } from 'react-router-dom';
+import "../styling/Form.css";
 
 export default function FlavorForm() {
     const [hastaState, setHastaState] = useState({
@@ -72,43 +73,51 @@ export default function FlavorForm() {
     //     </select>
     // </label>
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="form-container">
 
-            <label>
+            <label htmlFor="hastaName">
                 İsim:
                 <input
+                    id="hastaName"
                     name="hastaName"
-                    onChange={handleNameChange} />
+                    onChange={handleNameChange}
+                    type="text" />
             </label>
-            <br/>
-            <label>
+            <br />
+            <label htmlFor="hastaPhone">
                 Tel No:
                 <input
+                    id="hastaPhone"
                     name="hastaPhone"
+                    onChange={handlePhoneChange}
                     type="number"
-                    onChange={handlePhoneChange} />
+                />
             </label>
-            <br/>
-            <label>
+            <br />
+            <label htmlFor="hastaNots">
                 Notlar:
-                <input
+                <textarea
+                    id="hastaNots"
                     name="hastaNots"
-                    onChange={handleNotsChange} />
+                    onChange={handleNotsChange}
+                />
             </label>
-            <br/>
-            <label>
+            <br />
+            <label htmlFor="bittiMi">
                 Bitti Mi:
                 <input
+                    id="bittiMi"
                     name="bittiMi"
                     type="checkbox"
                     checked={hastaState.bittiMi}
-                    onChange={handleCheckboxChange} />
+                    onChange={handleCheckboxChange}
+                />
             </label>
-            <br/>
+            <br />
             <input type="submit" value="Submit" />
-            <br/>
+            <br />
             <Link to="/hasta_listesi_web">Ana Sayfa</Link>
-            <br/>
+            <br />
             <Link to="/Listings">Listeyi görüntüle</Link>
 
         </form>

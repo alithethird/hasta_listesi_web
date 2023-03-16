@@ -3,6 +3,8 @@ import { db } from "../utils/firebase";
 import { onValue, ref, push, set } from "firebase/database";
 import { Link } from 'react-router-dom';
 import "../styling/Form.css";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 export default function FlavorForm() {
     const [hastaState, setHastaState] = useState({
@@ -111,15 +113,32 @@ export default function FlavorForm() {
                     type="checkbox"
                     checked={hastaState.bittiMi}
                     onChange={handleCheckboxChange}
+                    style={{
+                        color: "primary",
+                        marginLeft: '10px',
+                        verticalAlign: 'middle',
+                        appearance: 'checkbox',
+                        WebkitAppearance: 'checkbox',
+                        MozAppearance: 'checkbox',
+                        msAppearance: 'checkbox',
+                        width: '16px',
+                        height: '16px',
+                        borderRadius: '3px',
+                        outline: 'none',
+                        border: '1px solid rgba(0,0,0,0.2)',
+                        boxShadow: '0px 1px 3px rgba(0,0,0,0.1)',
+                        background: hastaState.bittiMi ? 'blue' : 'pink'
+                    }}
                 />
             </label>
             <br />
             <input type="submit" value="Submit" />
             <br />
-            <Link to="/hasta_listesi_web">Ana Sayfa</Link>
-            <br />
-            <Link to="/Listings">Listeyi görüntüle</Link>
+            <Stack spacing={2} direction="column">
+                <Link to="/hasta_listesi_web" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Hasta Ekle</Button></Link>
 
+                <Link to="/Listings" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Listeyi görüntüle</Button>  </Link>
+            </Stack>
         </form>
     );
 }

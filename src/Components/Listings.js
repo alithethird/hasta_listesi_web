@@ -25,6 +25,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { Update } from "@mui/icons-material";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 
 export default function Listings() {
     const [order, setOrder] = React.useState('asc');
@@ -302,7 +304,7 @@ export default function Listings() {
         const dataq = onValue(query, (snapshot) => {
             const data = snapshot.val();
             // console.log("data: ", data);
-            if (snapshot.exists()) {                
+            if (snapshot.exists()) {
                 falseItems = [];
                 trueItems = [];
                 Object.keys(data).map((key) => {
@@ -346,7 +348,12 @@ export default function Listings() {
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - falseRows.length) : 0;
 
     return (
+
         <Box sx={{ width: '100%' }}>
+            <Stack spacing={2} direction="row">
+                <Link to="/hasta_listesi_web" style={{ paddingLeft: 13, textDecoration: 'none' }}><Button variant="contained">Ana Ekran</Button></Link>
+                <Link to="/Form" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Yeni Hasta Ekle</Button></Link>
+            </Stack>
             <Paper sx={{ width: '100%', mb: 2 }}>
                 <EnhancedTableToolbar numSelected={selected.length} tableName="Devam Eden Hasta Listesi" />
                 <TableContainer>
@@ -447,7 +454,7 @@ export default function Listings() {
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
-<EnhancedTableToolbar numSelected={selected.length} tableName="Bitmis Hasta Listesi" />
+                <EnhancedTableToolbar numSelected={selected.length} tableName="Bitmis Hasta Listesi" />
                 <TableContainer>
                     <Table
                         sx={{ minWidth: 750 }}

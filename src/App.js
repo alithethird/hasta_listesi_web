@@ -1,23 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
-
+import FlavorForm from './Components/FlavorForm';
+import { Routes, Route } from 'react-router-dom';
+import Home from './Components/Home';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Routes>
+        <Route path="/hasta_listesi_web" element={<Home />} />
+        <Route path="Form" element={<FlavorForm />} />
+      </Routes>
     </div>
   );
 }

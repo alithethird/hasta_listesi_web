@@ -225,7 +225,7 @@ export default function Listings() {
 
     const handleSelectAllClick = (event) => {
         if (event.target.checked) {
-            const newSelected = rows.map((n) => n.name);
+            const newSelected = rows.map((n) => n.isim);
             setSelected(newSelected);
             return;
         }

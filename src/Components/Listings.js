@@ -29,6 +29,9 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import TextField from "@mui/material/TextField";
 import SearchBar from '@mkyy/mui-search-bar';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from "./UserContext";
+
 
 export default function Listings() {
     const [order, setOrder] = React.useState('asc');
@@ -45,6 +48,9 @@ export default function Listings() {
     const [falseRows, setFalseRows] = React.useState([]);
     const [originalTrueRows, setOriginalTrueRows] = React.useState([]);
     const [originalFalseRows, setOriginalFalseRows] = React.useState([]);
+    const { userKey, setUserKey } = React.useContext(UserContext);
+
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         // Get a reference to the database
@@ -325,9 +331,9 @@ export default function Listings() {
 
     };
     const isSelected = (name) => selected.indexOf(name) !== -1;
-    React.useEffect(()=>{
-        setTrueRows(()=>originalTrueRows);
-        setFalseRows(()=>originalFalseRows);
+    React.useEffect(() => {
+        setTrueRows(() => originalTrueRows);
+        setFalseRows(() => originalFalseRows);
         console.log("originalTrueRows:::", originalTrueRows);
         console.log("originalFalseRows:::", originalFalseRows);
 
@@ -337,8 +343,8 @@ export default function Listings() {
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - falseRows.length) : 0;
     // const [textFieldValue, setTextFieldValue] = React.useState("");
     const handleSearch = textFieldValue => {
-        setTrueRows(()=>[...originalTrueRows]);
-        setFalseRows(()=>[...originalFalseRows]);
+        setTrueRows(() => [...originalTrueRows]);
+        setFalseRows(() => [...originalFalseRows]);
         console.log("originalFalseRows: ", originalFalseRows);
         let dummyTrueRow = [];
         let dummyFalseRow = [];
@@ -360,6 +366,12 @@ export default function Listings() {
         setTrueRows(dummyTrueRow);
         setFalseRows(dummyFalseRow);
     };
+
+    const goToModify = (event, key) => {
+        console.log(key);
+        setUserKey(key);
+        navigate('/ModifyForm', { replace: false });
+    }
     return (
 
         <Box sx={{ width: '100%' }}>
@@ -397,6 +409,7 @@ export default function Listings() {
                                     return (
                                         <TableRow
                                             hover
+                                            onClick={(event) => { goToModify(event, row.key) }}
                                             onChange={(event) => handleClick(event, row.key)}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
@@ -497,6 +510,7 @@ export default function Listings() {
                                         <TableRow
                                             hover
                                             onChange={(event) => handleClick(event, row.key)}
+                                            onClick={(event) => { goToModify(event, row.key) }}
                                             role="checkbox"
                                             aria-checked={isItemSelected}
                                             tabIndex={-1}

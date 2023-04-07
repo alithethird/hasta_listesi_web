@@ -1,20 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { db } from "../utils/firebase";
-import { onValue, ref, push, set } from "firebase/database";
+import { onValue, ref, push, set, update } from "firebase/database";
 import { Link } from 'react-router-dom';
 import "../styling/Form.css";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { UserContext } from "./UserContext";
 import { useNavigate } from 'react-router-dom';
 
-export default function FlavorForm() {
+export default function ModifyForm() {
     const navigate = useNavigate();
+    const { userKey, setUserKey } = useContext(UserContext);
     const [hastaState, setHastaState] = useState({
         isim: '',
         phone: '',
         not: '',
         bittiMi: false
     });
+    React.useEffect(() => {
+        // Get a reference to the database
+        const query = ref(db, "hastalar/" + userKey);
+        const dataq = onValue(query, (snapshot) => {
+            const data = snapshot.val();
+            if (snapshot.exists()) {
+                console.log(data);
+                setHastaState(data);
+            }
+        });
+    }, []);
+    console.log(userKey);
     const handleCheckboxChange = (event) => {
         setHastaState({
             ...hastaState,
@@ -50,21 +64,9 @@ export default function FlavorForm() {
         event.preventDefault();
 
         // Get a reference to the database
-        const query = ref(db, "hastalar");
-        const data = onValue(query, (snapshot) => {
-            const data = snapshot.val();
-
-            if (snapshot.exists()) {
-                Object.values(data).map((project) => {
-                    console.log("project: ", project);
-                });
-            }
-        });
-        console.log("data: ", data);
-        const pusher = push(query);
-        set(pusher, hastaState);
+        const query = ref(db, "hastalar/" + userKey);
+        update(query, hastaState);
         navigate('/Listings', { replace: false });
-        // Upload the state to the database
     }
 
     // If she want to add selecting from a list
@@ -86,7 +88,10 @@ export default function FlavorForm() {
                     id="hastaName"
                     name="hastaName"
                     onChange={handleNameChange}
-                    type="text" />
+                    type="text"
+                    value={hastaState.isim}
+                />
+
             </label>
             <br />
             <label htmlFor="hastaPhone">
@@ -96,6 +101,7 @@ export default function FlavorForm() {
                     name="hastaPhone"
                     onChange={handlePhoneChange}
                     type="number"
+                    value={hastaState.phone}
                 />
             </label>
             <br />
@@ -105,6 +111,7 @@ export default function FlavorForm() {
                     id="hastaNots"
                     name="hastaNots"
                     onChange={handleNotsChange}
+                    value={hastaState.not}
                 />
             </label>
             <br />
@@ -114,6 +121,7 @@ export default function FlavorForm() {
                     id="bittiMi"
                     name="bittiMi"
                     type="checkbox"
+                    value={hastaState.bittiMi}
                     checked={hastaState.bittiMi}
                     onChange={handleCheckboxChange}
                     style={{
@@ -135,13 +143,13 @@ export default function FlavorForm() {
                 />
             </label>
             <br />
-            <Button type="submit" variant="contained">Hasta Ekle</Button>
+            <Button type="submit" variant="contained">Hasta Güncelle</Button>
             <br />
             <Stack spacing={2} direction="column">
                 <Link to="/hasta_listesi_web" style={{ textDecoration: 'none' }}><Button variant="contained">Ana Ekran</Button></Link>
 
                 <Link to="/Listings" style={{ textDecoration: 'none' }}><Button variant="contained">Listeyi görüntüle</Button>  </Link>
             </Stack>
-        </form>
+        </form >
     );
 }

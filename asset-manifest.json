@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/hasta_listesi_web/static/css/main.839c8cc4.css",
-    "main.js": "/hasta_listesi_web/static/js/main.1c0ab700.js",
+    "main.js": "/hasta_listesi_web/static/js/main.0abc9fee.js",
     "static/js/787.28cb0dcd.chunk.js": "/hasta_listesi_web/static/js/787.28cb0dcd.chunk.js",
     "static/media/logo.svg": "/hasta_listesi_web/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/hasta_listesi_web/index.html",
     "main.839c8cc4.css.map": "/hasta_listesi_web/static/css/main.839c8cc4.css.map",
-    "main.1c0ab700.js.map": "/hasta_listesi_web/static/js/main.1c0ab700.js.map",
+    "main.0abc9fee.js.map": "/hasta_listesi_web/static/js/main.0abc9fee.js.map",
     "787.28cb0dcd.chunk.js.map": "/hasta_listesi_web/static/js/787.28cb0dcd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.839c8cc4.css",
-    "static/js/main.1c0ab700.js"
+    "static/js/main.0abc9fee.js"
   ]
 }

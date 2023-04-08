@@ -10,9 +10,9 @@ export default function Home() {
         <>
             <h1>Dünyanın en güzel dişçisinin hasta listesi</h1>
             <Stack spacing={2} direction="column">
-                <Link to="/Form" style={{paddingLeft: 13, textDecoration: 'none' }}><Button variant="contained">Hasta Ekle</Button></Link>
+                <Link to="/Form" style={{ textDecoration: 'none' }}><Button variant="contained">Hasta Ekle</Button></Link>
 
-                <Link to="/Listings" style={{paddingLeft: 13, textDecoration: 'none'}}><Button variant="contained">Listeyi görüntüle</Button>  </Link>
+                <Link to="/Listings" style={{ textDecoration: 'none' }}><Button variant="contained">Listeyi görüntüle</Button>  </Link>
             </Stack></>
     );
 }

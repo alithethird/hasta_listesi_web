@@ -95,7 +95,7 @@ export default function FlavorForm() {
                     id="hastaPhone"
                     name="hastaPhone"
                     onChange={handlePhoneChange}
-                    type="number"
+                    type="text"
                 />
             </label>
             <br />

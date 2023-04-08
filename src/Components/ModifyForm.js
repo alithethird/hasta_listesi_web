@@ -100,7 +100,7 @@ export default function ModifyForm() {
                     id="hastaPhone"
                     name="hastaPhone"
                     onChange={handlePhoneChange}
-                    type="number"
+                    type="text"
                     value={hastaState.phone}
                 />
             </label>

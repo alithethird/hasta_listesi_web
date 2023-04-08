@@ -39,7 +39,7 @@ export default function Listings() {
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rowsPerPage, setRowsPerPage] = React.useState(25);
     const [checkBox, setCheckBox] = React.useState(0);
     const deleteList = [];
     let falseItems = [];
@@ -368,6 +368,8 @@ export default function Listings() {
     };
 
     const goToModify = (event, key) => {
+        if (event.target.type == "checkbox") return;
+
         console.log(key);
         setUserKey(key);
         navigate('/ModifyForm', { replace: false });
